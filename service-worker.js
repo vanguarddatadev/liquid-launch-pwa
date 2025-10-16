@@ -7,7 +7,6 @@ const urlsToCache = [
   '/liquid-launch-manager-portal.html',
   '/liquid-launch-influencer-portal.html',
   '/liquid-launch-signup.html',
-  '/liquid-launch-value-walkthrough.html',
   '/comparison-5col-all-packages.html',
   '/comparison-2col-twitch-vs-liquid.html',
   'https://unpkg.com/lucide@latest',
