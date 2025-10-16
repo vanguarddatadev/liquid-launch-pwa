@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Package Comparison - Liquid Launch vs Twitch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #94a3b8;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            min-width: 1200px;
+            border-collapse: collapse;
+        }
+
+        .comparison-table thead th {
+            padding: 20px 16px;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            vertical-align: middle;
+        }
+
+        .comparison-table thead th.twitch-col {
+            padding: 12px 16px;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+
+        .comparison-table thead th:first-child {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.5);
+            color: #94a3b8;
+            width: 25%;
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .comparison-table thead th.twitch-col {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-table thead th.bronze-col {
+            background: rgba(205, 127, 50, 0.2);
+            color: #cd7f32;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            width: 15%;
+        }
+
+        .comparison-table thead th.silver-col {
+            background: rgba(192, 192, 192, 0.2);
+            color: #c0c0c0;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            width: 15%;
+        }
+
+        .comparison-table thead th.gold-col {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            width: 15%;
+        }
+
+        .comparison-table thead th.platinum-col {
+            background: rgba(229, 228, 226, 0.2);
+            color: #e5e4e2;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            width: 15%;
+        }
+
+        .comparison-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tbody td:first-child {
+            font-weight: 700;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-table tbody td:nth-child(2) {
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .comparison-table tbody td:nth-child(3) {
+            background: rgba(205, 127, 50, 0.05);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .comparison-table tbody td:nth-child(4) {
+            background: rgba(192, 192, 192, 0.08);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .comparison-table tbody td:nth-child(5) {
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .comparison-table tbody td:nth-child(6) {
+            background: rgba(229, 228, 226, 0.05);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .check {
+            color: #10b981;
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .cross {
+            color: #ef4444;
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .value {
+            color: #cbd5e1;
+            display: block;
+            margin-top: 4px;
+            font-size: 12px;
+        }
+
+        .price-row td {
+            font-size: 16px;
+            font-weight: 900;
+            padding: 18px 16px;
+        }
+
+        .price-row td:nth-child(2) {
+            color: #ef4444;
+        }
+
+        .price-row td:nth-child(3) {
+            color: #cd7f32;
+        }
+
+        .price-row td:nth-child(4) {
+            color: #c0c0c0;
+        }
+
+        .price-row td:nth-child(5) {
+            color: #ffd700;
+        }
+
+        .price-row td:nth-child(6) {
+            color: #e5e4e2;
+        }
+
+
+        /* Mobile Card View */
+        .mobile-comparison {
+            display: none;
+        }
+
+        .mobile-package {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .mobile-package-header {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .mobile-package-name {
+            font-size: 20px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .mobile-package.twitch .mobile-package-name {
+            color: #ef4444;
+        }
+
+        .mobile-package.bronze .mobile-package-name {
+            color: #cd7f32;
+        }
+
+        .mobile-package.silver .mobile-package-name {
+            color: #c0c0c0;
+        }
+
+        .mobile-package.gold .mobile-package-name {
+            color: #ffd700;
+        }
+
+        .mobile-package.platinum .mobile-package-name {
+            color: #e5e4e2;
+        }
+
+        .mobile-package-price {
+            font-size: 32px;
+            font-weight: 900;
+        }
+
+        .mobile-feature-group {
+            margin-bottom: 20px;
+        }
+
+        .mobile-feature-group-title {
+            font-size: 14px;
+            font-weight: 900;
+            color: #4fd1c5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .mobile-feature {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+
+        .mobile-feature-name {
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        .mobile-feature-value {
+            color: #ffffff;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        @media (max-width: 1024px) {
+            body {
+                padding: 20px 16px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .table-wrapper {
+                padding: 12px;
+            }
+
+            .comparison-table {
+                min-width: 900px;
+            }
+
+            .comparison-table thead th {
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+
+            .comparison-table tbody td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                margin-bottom: 24px;
+            }
+
+            .title {
+                font-size: 20px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+            }
+
+            /* Hide desktop table, show mobile cards */
+            .table-wrapper {
+                display: none;
+            }
+
+            .mobile-comparison {
+                display: block;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .title {
+                font-size: 18px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+            }
+
+            .mobile-package {
+                padding: 16px;
+            }
+
+            .mobile-package-name {
+                font-size: 18px;
+            }
+
+            .mobile-package-price {
+                font-size: 28px;
+            }
+
+            .mobile-feature {
+                font-size: 12px;
+                padding: 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Complete Package Comparison</h1>
+            <p class="subtitle">Compare all Liquid Launch tiers against Twitch Bounty Board</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th class="twitch-col">Twitch<br>Bounties</th>
+                        <th class="bronze-col">Bronze</th>
+                        <th class="silver-col">Silver</th>
+                        <th class="gold-col">Gold</th>
+                        <th class="platinum-col">Platinum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Pricing -->
+                    <tr class="price-row">
+                        <td>Price</td>
+                        <td>$25,000</td>
+                        <td>$5,000</td>
+                        <td>$10,000</td>
+                        <td>$25,000</td>
+                        <td>$100,000</td>
+                    </tr>
+
+                    <!-- Hours & Influencers -->
+                    <tr>
+                        <td>Stream Hours</td>
+                        <td><span class="value">Varies</span></td>
+                        <td><span class="value">5 hours</span></td>
+                        <td><span class="value">15 hours</span></td>
+                        <td><span class="value">40 hours</span></td>
+                        <td><span class="value">100+ hours</span></td>
+                    </tr>
+                    <tr>
+                        <td>Number of Influencers</td>
+                        <td><span class="value">Random</span></td>
+                        <td><span class="value">2 streamers</span></td>
+                        <td><span class="value">4-6 streamers</span></td>
+                        <td><span class="value">6-8 streamers</span></td>
+                        <td><span class="value">Full TL roster</span></td>
+                    </tr>
+
+                    <!-- Influencer Quality -->
+                    <tr>
+                        <td>Curated Influencers</td>
+                        <td><span class="cross">✗</span> <span class="value">Random</span></td>
+                        <td><span class="check">✓</span> <span class="value">Team Liquid</span></td>
+                        <td><span class="check">✓</span> <span class="value">Team Liquid</span></td>
+                        <td><span class="check">✓</span> <span class="value">Top-tier TL</span></td>
+                        <td><span class="check">✓</span> <span class="value">Full roster</span></td>
+                    </tr>
+                    <tr>
+                        <td>Genre Matching</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+
+                    <!-- Ratings -->
+                    <tr>
+                        <td>Team Liquid Rating</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Community Rating</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+
+                    <!-- Feedback -->
+                    <tr>
+                        <td>Influencer Feedback Forms</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Community Feedback</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+
+                    <!-- Content Delivery -->
+                    <tr>
+                        <td>VOD Access</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span> <span class="value">Full VODs</span></td>
+                        <td><span class="check">✓</span> <span class="value">Full VODs</span></td>
+                        <td><span class="check">✓</span> <span class="value">Full VODs</span></td>
+                        <td><span class="check">✓</span> <span class="value">Full VODs</span></td>
+                    </tr>
+                    <tr>
+                        <td>Stream Clips</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Highlight Reels</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="value">Basic</span></td>
+                        <td><span class="value">Enhanced</span></td>
+                        <td><span class="check">✓</span> <span class="value">Professional</span></td>
+                        <td><span class="check">✓</span> <span class="value">Full team</span></td>
+                    </tr>
+
+                    <!-- Conversion Tracking -->
+                    <tr>
+                        <td>Steam Wishlist Tracking</td>
+                        <td><span class="cross">✗</span> <span class="value">Limited</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Kickstarter Integration</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Email List Building</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Analytics Dashboard</td>
+                        <td><span class="value">Basic</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span> <span class="value">Advanced</span></td>
+                    </tr>
+
+                    <!-- Premium Features -->
+                    <tr>
+                        <td>Developer Interview</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Multi-Channel Reach</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="value">Limited</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Social Media Amplification</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Dedicated Account Manager</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+
+                    <!-- Enterprise Features -->
+                    <tr>
+                        <td>Campaign Duration</td>
+                        <td><span class="value">One-time</span></td>
+                        <td><span class="value">One-time</span></td>
+                        <td><span class="value">One-time</span></td>
+                        <td><span class="value">One-time</span></td>
+                        <td><span class="value">6 months</span></td>
+                    </tr>
+                    <tr>
+                        <td>Press & Media Support</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Custom Content Team</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Custom Drops</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+
+                    <!-- Support -->
+                    <tr>
+                        <td>Support Level</td>
+                        <td><span class="value">Self-service</span></td>
+                        <td><span class="value">Standard</span></td>
+                        <td><span class="value">Priority</span></td>
+                        <td><span class="value">Premium</span></td>
+                        <td><span class="value">White-glove</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="mobile-comparison">
+            <!-- Twitch Package -->
+            <div class="mobile-package twitch">
+                <div class="mobile-package-header">
+                    <div class="mobile-package-name">Twitch Bounties</div>
+                    <div class="mobile-package-price">$25,000</div>
+                </div>
+
+                <div class="mobile-feature-group">
+                    <div class="mobile-feature-group-title">Basic Features</div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Stream Hours</span>
+                        <span class="mobile-feature-value">Varies</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Influencers</span>
+                        <span class="mobile-feature-value">Random</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Curated</span>
+                        <span class="mobile-feature-value" style="color: #ef4444;">✗</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Ratings</span>
+                        <span class="mobile-feature-value" style="color: #ef4444;">✗</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">VODs</span>
+                        <span class="mobile-feature-value" style="color: #ef4444;">✗</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Tracking</span>
+                        <span class="mobile-feature-value">Limited</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Support</span>
+                        <span class="mobile-feature-value">Self-service</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bronze Package -->
+            <div class="mobile-package bronze">
+                <div class="mobile-package-header">
+                    <div class="mobile-package-name">Bronze</div>
+                    <div class="mobile-package-price">$5,000</div>
+                </div>
+
+                <div class="mobile-feature-group">
+                    <div class="mobile-feature-group-title">Basic Features</div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Stream Hours</span>
+                        <span class="mobile-feature-value">5 hours</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Influencers</span>
+                        <span class="mobile-feature-value">2 streamers</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Team Liquid Curated</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Dual Ratings</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">VODs & Clips</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Steam Tracking</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Feedback Forms</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Support</span>
+                        <span class="mobile-feature-value">Standard</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Silver Package -->
+            <div class="mobile-package silver">
+                <div class="mobile-package-header">
+                    <div class="mobile-package-name">Silver</div>
+                    <div class="mobile-package-price">$10,000</div>
+                </div>
+
+                <div class="mobile-feature-group">
+                    <div class="mobile-feature-group-title">Includes All Bronze Features Plus:</div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Stream Hours</span>
+                        <span class="mobile-feature-value">15 hours</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Influencers</span>
+                        <span class="mobile-feature-value">4-6 streamers</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Kickstarter Integration</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Email List Building</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Dev Interview</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Multi-Channel Reach</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Support</span>
+                        <span class="mobile-feature-value">Priority</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gold Package -->
+            <div class="mobile-package gold">
+                <div class="mobile-package-header">
+                    <div class="mobile-package-name">Gold</div>
+                    <div class="mobile-package-price">$25,000</div>
+                </div>
+
+                <div class="mobile-feature-group">
+                    <div class="mobile-feature-group-title">Includes All Silver Features Plus:</div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Stream Hours</span>
+                        <span class="mobile-feature-value">40 hours</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Influencers</span>
+                        <span class="mobile-feature-value">6-8 top-tier</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Professional Editing</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Social Amplification</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Dedicated Manager</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Launch Coordination</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Support</span>
+                        <span class="mobile-feature-value">Premium</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Platinum Package -->
+            <div class="mobile-package platinum">
+                <div class="mobile-package-header">
+                    <div class="mobile-package-name">Platinum</div>
+                    <div class="mobile-package-price">$100,000</div>
+                </div>
+
+                <div class="mobile-feature-group">
+                    <div class="mobile-feature-group-title">Includes All Gold Features Plus:</div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Stream Hours</span>
+                        <span class="mobile-feature-value">100+ hours</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Influencers</span>
+                        <span class="mobile-feature-value">Full TL roster</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Campaign Duration</span>
+                        <span class="mobile-feature-value">6 months</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Press Support</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Custom Content Team</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Custom Drops</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Tournament Opportunities</span>
+                        <span class="mobile-feature-value" style="color: #10b981;">✓</span>
+                    </div>
+                    <div class="mobile-feature">
+                        <span class="mobile-feature-name">Support</span>
+                        <span class="mobile-feature-value">White-glove</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

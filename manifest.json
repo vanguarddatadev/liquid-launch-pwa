@@ -1,0 +1,83 @@
+{
+  "name": "Liquid Launch - Team Liquid Influencer Marketing",
+  "short_name": "Liquid Launch",
+  "description": "Team Liquid influencer marketing platform. Curated streamers, dual ratings, conversion tracking, and marketing content from $5K.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e27",
+  "theme_color": "#4fd1c5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "marketing", "entertainment"],
+  "screenshots": [
+    {
+      "src": "https://via.placeholder.com/540x720/0a0e27/4fd1c5?text=Liquid+Launch",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://via.placeholder.com/1280x720/0a0e27/4fd1c5?text=Liquid+Launch",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "View Packages",
+      "short_name": "Packages",
+      "description": "View all Liquid Launch packages",
+      "url": "/liquid-launch-packages-main.html",
+      "icons": [
+        {
+          "src": "https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Manager Portal",
+      "short_name": "Manager",
+      "description": "Campaign manager dashboard",
+      "url": "/liquid-launch-manager-portal.html",
+      "icons": [
+        {
+          "src": "https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Influencer Portal",
+      "short_name": "Influencer",
+      "description": "Influencer dashboard",
+      "url": "/liquid-launch-influencer-portal.html",
+      "icons": [
+        {
+          "src": "https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

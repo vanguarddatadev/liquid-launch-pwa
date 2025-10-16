@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotating Hero - Liquid Launch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Top Left Logo */
+        .top-logo {
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .tl-logo-circle {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #4fd1c5;
+        }
+
+        .tl-logo-circle img {
+            width: 35px;
+            height: 35px;
+            filter: brightness(0) invert(1);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Top Nav */
+        .top-nav {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            border: none;
+        }
+
+        .nav-btn.start {
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            color: white;
+        }
+
+        .nav-btn.start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 209, 197, 0.4);
+        }
+
+        .nav-btn.login {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            color: #4fd1c5;
+        }
+
+        .nav-btn.login:hover {
+            background: rgba(79, 209, 197, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* FIXED HEIGHT BANNER - Separated from content below */
+        .hero-header {
+            text-align: center;
+            padding: 120px 40px 40px 40px;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Content below banner - INDEPENDENT */
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px 60px 40px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-body {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-left {
+            position: relative;
+        }
+
+        .hero-right {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            color: #4fd1c5;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .hero-headline {
+            font-size: 56px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #4fd1c5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            width: 1000px;
+            max-width: 100%;
+        }
+
+        .hero-headline.fade-out {
+            opacity: 0;
+        }
+
+        .hero-subtext {
+            font-size: 18px;
+            color: #94a3b8;
+            line-height: 1.6;
+            width: 900px;
+            max-width: 100%;
+            margin: 0 auto;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .hero-subtext.fade-out {
+            opacity: 0;
+        }
+
+        .hero-cta {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .hero-cta .cta-btn {
+            width: 100%;
+            text-align: center;
+        }
+
+
+        .cta-btn {
+            padding: 16px 40px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn.primary {
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            color: white;
+        }
+
+        .cta-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 209, 197, 0.4);
+        }
+
+        .cta-btn.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            color: #4fd1c5;
+        }
+
+        .cta-btn.secondary:hover {
+            background: rgba(79, 209, 197, 0.1);
+        }
+
+
+        /* Background decoration */
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(79, 209, 197, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.3) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .hero-body {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .hero-headline {
+                font-size: 42px;
+            }
+
+            .hero-subtext {
+                font-size: 16px;
+            }
+
+            .top-logo {
+                left: 20px;
+            }
+
+            .top-nav {
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Mobile Navigation */
+            .top-logo {
+                top: 15px;
+                left: 15px;
+            }
+
+            .tl-logo-circle {
+                width: 40px;
+                height: 40px;
+            }
+
+            .tl-logo-circle img {
+                width: 28px;
+                height: 28px;
+            }
+
+            .brand-text {
+                display: none; /* Hide text on mobile to save space */
+            }
+
+            .top-nav {
+                top: 15px;
+                right: 15px;
+                gap: 8px;
+            }
+
+            .nav-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            /* Mobile Hero */
+            .hero-header {
+                padding: 80px 20px 30px 20px;
+                height: auto;
+                min-height: 240px;
+            }
+
+            .hero-content {
+                padding: 0 20px 40px 20px;
+            }
+
+            .hero-body {
+                gap: 24px;
+            }
+
+            .hero-headline {
+                font-size: 28px;
+                width: 100%;
+            }
+
+            .hero-subtext {
+                font-size: 14px;
+                width: 100%;
+            }
+
+            .cta-btn {
+                padding: 14px 24px;
+                font-size: 14px;
+            }
+
+            .video-container {
+                border-radius: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Extra small mobile */
+            .top-nav {
+                flex-direction: column;
+                gap: 6px;
+                align-items: flex-end;
+            }
+
+            .nav-btn {
+                padding: 8px 12px;
+                font-size: 11px;
+                min-width: 70px;
+                text-align: center;
+            }
+
+            .hero-header {
+                padding: 70px 15px 20px 15px;
+                min-height: 200px;
+            }
+
+            .hero-content {
+                padding: 0 15px 30px 15px;
+            }
+
+            .hero-headline {
+                font-size: 24px;
+                margin-bottom: 16px;
+            }
+
+            .hero-subtext {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            .cta-btn {
+                padding: 12px 20px;
+                font-size: 13px;
+            }
+
+            .hero-cta {
+                gap: 10px;
+            }
+        }
+
+        /* Landscape mobile optimization */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .hero-header {
+                padding: 60px 20px 20px 20px;
+                min-height: auto;
+            }
+
+            .hero-headline {
+                font-size: 24px;
+                margin-bottom: 12px;
+            }
+
+            .hero-subtext {
+                font-size: 13px;
+            }
+
+            .hero-body {
+                gap: 20px;
+            }
+
+            .cta-btn {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Left Logo -->
+    <div class="top-logo">
+        <div class="tl-logo-circle">
+            <img src="https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg" alt="Team Liquid">
+        </div>
+        <div class="brand-text">
+            <div class="brand-name">Liquid Launch</div>
+            <div class="brand-subtitle">by Team Liquid</div>
+        </div>
+    </div>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <button class="nav-btn start" onclick="window.location.href='liquid-launch-value-walkthrough.html'">Start</button>
+        <button class="nav-btn login" onclick="alert('Login functionality coming soon')">Login</button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+
+        <div class="hero-content">
+            <!-- Header: Rotating Headline at Top -->
+            <div class="hero-header">
+                <h1 class="hero-headline" id="heroHeadline">Build Hype, Build Wishlists, Build Credibility</h1>
+                <p class="hero-subtext" id="heroSubtext">Team Liquid influencer marketing from $5K. Curated streamers, dual ratings, conversion tracking, and marketing content you can reuse forever.</p>
+            </div>
+
+            <!-- Body: Video Left, Buttons Right -->
+            <div class="hero-body">
+                <!-- Left side: Video -->
+                <div class="hero-left">
+                    <div class="video-container">
+                        <iframe
+                            src="https://www.youtube.com/embed/Z1WiV7utbqQ?autoplay=1&mute=1&loop=1&playlist=Z1WiV7utbqQ"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Right side: Buttons stacked -->
+                <div class="hero-right">
+                    <div class="hero-cta">
+                        <button class="cta-btn primary" onclick="window.location.href='liquid-launch-value-walkthrough.html'">See How It Works</button>
+                        <button class="cta-btn secondary" onclick="scrollToPackages()">View Packages</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const headlines = [
+            {
+                headline: "Build Hype, Build Wishlists, Build Credibility",
+                subtext: "Team Liquid influencer marketing from $5K. Curated streamers, dual ratings, conversion tracking, and marketing content you can reuse forever.",
+                thumbnail: {
+                    gameTitle: "BALATRO",
+                    mainText: "FIRST PLAYTHROUGH",
+                    subText: "Can We Beat The Final Boss?",
+                    badge: "Team Liquid Streamer"
+                }
+            },
+            {
+                headline: "Marketing That Pays For Itself",
+                subtext: "Track conversions from streams to wishlists to sales. Your campaign generates the momentum that drives revenue—not just views.",
+                thumbnail: {
+                    gameTitle: "YOUR INDIE GAME",
+                    mainText: "TRACK EVERY CONVERSION",
+                    subText: "Wishlists • Pledges • Sales",
+                    badge: "ROI Tracking"
+                }
+            },
+            {
+                headline: "Launch With Confidence And Momentum",
+                subtext: "Stop gambling on random streamers. Get vetted Team Liquid influencers who play your genre and deliver real conversions.",
+                thumbnail: {
+                    gameTitle: "NEW INDIE GEM",
+                    mainText: "SPONSORED STREAM",
+                    subText: "Playing Your Game Live",
+                    badge: "Curated Streamer"
+                }
+            },
+            {
+                headline: "Turn Visibility Into Conversions",
+                subtext: "Track every wishlist, Kickstarter pledge, and email signup. Know exactly what's working and what you're getting for your money.",
+                thumbnail: {
+                    gameTitle: "KICKSTARTER LAUNCH",
+                    mainText: "LIVE PLEDGE TRACKING",
+                    subText: "Real-Time Campaign Analytics",
+                    badge: "Conversion Dashboard"
+                }
+            },
+            {
+                headline: "Launch Bigger Than Your Budget",
+                subtext: "Professional influencer marketing starting at $5K—5x less than Twitch Bounty Board with better streamers and real accountability.",
+                thumbnail: {
+                    gameTitle: "YOUR GAME HERE",
+                    mainText: "STARTING AT $5K",
+                    subText: "5x Less Than Competitors",
+                    badge: "Best Value"
+                }
+            },
+            {
+                headline: "Visibility, Validation, And Sales",
+                subtext: "Get professional ratings, community feedback, and conversion tracking. Plus VODs and clips you can use in marketing forever.",
+                thumbnail: {
+                    gameTitle: "FULL CAMPAIGN",
+                    mainText: "DUAL RATINGS SYSTEM",
+                    subText: "Pro Reviews + Community Feedback",
+                    badge: "Complete Package"
+                }
+            },
+            {
+                headline: "Build Your Audience Before You Need It",
+                subtext: "Validate your game, build wishlists, and create permanent marketing assets—all before launch day.",
+                thumbnail: {
+                    gameTitle: "PRE-LAUNCH",
+                    mainText: "BUILD MOMENTUM EARLY",
+                    subText: "Validate Before You Launch",
+                    badge: "Early Access"
+                }
+            },
+            {
+                headline: "Marketing Content That Works Forever",
+                subtext: "Unlike one-time streams that disappear, you get professionally edited VODs, clips, and highlights to use in perpetuity.",
+                thumbnail: {
+                    gameTitle: "PERMANENT ASSETS",
+                    mainText: "VODS • CLIPS • HIGHLIGHTS",
+                    subText: "Marketing Content You Own Forever",
+                    badge: "Content Library"
+                }
+            },
+            {
+                headline: "Launch Smarter, Launch Stronger",
+                subtext: "Team Liquid's credibility, curated influencers matched to your genre, and conversion tracking that proves ROI.",
+                thumbnail: {
+                    gameTitle: "LAUNCH DAY",
+                    mainText: "COORDINATED EVENT",
+                    subText: "5+ Streamers Go Live Together",
+                    badge: "Launch Event"
+                }
+            },
+            {
+                headline: "Launch With Proof Not Hope",
+                subtext: "Professional ratings, detailed feedback forms, and tracked conversions. Know your game works before you bet everything on launch.",
+                thumbnail: {
+                    gameTitle: "DATA-DRIVEN",
+                    mainText: "PROOF NOT HOPE",
+                    subText: "Know It Works Before Launch",
+                    badge: "Analytics Included"
+                }
+            }
+        ];
+
+        let currentIndex = 0;
+        let lastRotationTime = Date.now();
+        let isRotating = false;
+        let animationFrameId = null;
+
+        function updateHeadline(index) {
+            const headlineEl = document.getElementById('heroHeadline');
+            const subtextEl = document.getElementById('heroSubtext');
+
+            if (!headlineEl || !subtextEl) return;
+
+            // Fade out
+            headlineEl.classList.add('fade-out');
+            subtextEl.classList.add('fade-out');
+
+            // Wait for fade out, then update content and fade in
+            setTimeout(() => {
+                headlineEl.textContent = headlines[index].headline;
+                subtextEl.textContent = headlines[index].subtext;
+
+                headlineEl.classList.remove('fade-out');
+                subtextEl.classList.remove('fade-out');
+            }, 300);
+
+            currentIndex = index;
+        }
+
+        function nextSlide() {
+            const nextIndex = (currentIndex + 1) % headlines.length;
+            updateHeadline(nextIndex);
+            lastRotationTime = Date.now();
+        }
+
+        function rotationLoop() {
+            if (!isRotating) {
+                console.log('Rotation stopped in loop');
+                return;
+            }
+
+            const now = Date.now();
+            const elapsed = now - lastRotationTime;
+
+            // Check if 4 seconds have passed
+            if (elapsed >= 4000) {
+                console.log('4 seconds elapsed, rotating to next slide');
+                nextSlide();
+            }
+
+            // Continue the loop
+            animationFrameId = requestAnimationFrame(rotationLoop);
+        }
+
+        function startRotation() {
+            if (isRotating) {
+                console.log('Rotation already running');
+                return;
+            }
+            isRotating = true;
+            lastRotationTime = Date.now();
+
+            console.log('Starting rotation at:', new Date().toISOString());
+            console.log('Next rotation in 4 seconds at:', new Date(Date.now() + 4000).toISOString());
+
+            // Cancel any existing animation frame
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+
+            // Start animation loop
+            animationFrameId = requestAnimationFrame(rotationLoop);
+            console.log('requestAnimationFrame scheduled, ID:', animationFrameId);
+        }
+
+        function stopRotation() {
+            isRotating = false;
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            console.log('Rotation stopped');
+        }
+
+        function resetRotation() {
+            stopRotation();
+            startRotation();
+        }
+
+        function scrollToPackages() {
+            // This would scroll to packages section if on same page
+            // For now, just go to packages page
+            window.location.href = 'liquid-launch-packages-main.html';
+        }
+
+        // Start rotation on any user interaction (required for autoplay pages)
+        let rotationActivated = false;
+
+        function activateRotation() {
+            if (rotationActivated) return;
+            rotationActivated = true;
+            console.log('User interaction detected - activating rotation');
+            startRotation();
+        }
+
+        // Try to start immediately
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startRotation);
+        } else {
+            startRotation();
+        }
+
+        // But also activate on any user interaction (click, mousemove, keypress)
+        document.addEventListener('click', activateRotation, { once: true });
+        document.addEventListener('mousemove', activateRotation, { once: true });
+        document.addEventListener('keydown', activateRotation, { once: true });
+        document.addEventListener('touchstart', activateRotation, { once: true });
+
+        // Try on window load
+        window.addEventListener('load', function() {
+            if (!isRotating) {
+                startRotation();
+            }
+        });
+
+        // Add hover pause/resume
+        window.addEventListener('load', function() {
+            const heroContent = document.querySelector('.hero-content');
+            if (heroContent) {
+                // Pause rotation on hover
+                heroContent.addEventListener('mouseenter', () => {
+                    stopRotation();
+                });
+
+                heroContent.addEventListener('mouseleave', () => {
+                    startRotation();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

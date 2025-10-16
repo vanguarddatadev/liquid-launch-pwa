@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Package - Liquid Launch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Top Nav */
+        .top-nav {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            border: none;
+        }
+
+        .nav-btn.start {
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            color: white;
+        }
+
+        .nav-btn.start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 209, 197, 0.4);
+        }
+
+        .nav-btn.login {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            color: #4fd1c5;
+        }
+
+        .nav-btn.login:hover {
+            background: rgba(79, 209, 197, 0.1);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px 40px 20px 40px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .main-title {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            line-height: 1.1;
+        }
+
+        .main-subtitle {
+            font-size: 15px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .cta-bar {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 209, 197, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            color: #4fd1c5;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(79, 209, 197, 0.1);
+        }
+
+        /* Packages Grid */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .package-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px 16px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .package-card:hover {
+            border-color: rgba(79, 209, 197, 0.5);
+            transform: translateY(-4px);
+        }
+
+        .package-tier {
+            font-size: 14px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .package-card.bronze .package-tier {
+            color: #cd7f32;
+        }
+
+        .package-card.silver .package-tier {
+            color: #c0c0c0;
+        }
+
+        .package-card.gold .package-tier {
+            color: #ffd700;
+        }
+
+        .package-card.platinum .package-tier {
+            color: #e5e4e2;
+        }
+
+        .package-price {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            line-height: 1;
+        }
+
+        .package-desc {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .package-features {
+            list-style: none;
+            flex: 1;
+            margin-bottom: 16px;
+        }
+
+        .package-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+
+        .package-feature::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: 900;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .select-btn {
+            width: 100%;
+            padding: 12px;
+            background: #4fd1c5;
+            border: none;
+            border-radius: 6px;
+            color: #0a0e27;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .select-btn:hover {
+            background: #3eb8ac;
+            transform: translateY(-2px);
+        }
+
+        .select-btn.contact {
+            background: rgba(79, 209, 197, 0.2);
+            color: #4fd1c5;
+            border: 2px solid #4fd1c5;
+        }
+
+        .select-btn.contact:hover {
+            background: rgba(79, 209, 197, 0.3);
+        }
+
+        /* Bottom CTA */
+        .bottom-cta {
+            text-align: center;
+            padding: 16px 0 0 0;
+        }
+
+        .bottom-cta h2 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0a0e27;
+            width: 98vw;
+            height: 95vh;
+            overflow: hidden;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 32px;
+            color: #ffffff;
+            cursor: pointer;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.8);
+        }
+
+        @media (max-width: 1400px) {
+            .packages-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                top: 15px;
+                right: 15px;
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-end;
+            }
+
+            .nav-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+                min-width: 70px;
+            }
+
+            .container {
+                padding: 80px 20px 20px 20px;
+            }
+
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-title {
+                font-size: 24px;
+                padding-right: 0;
+            }
+
+            .main-subtitle {
+                font-size: 14px;
+            }
+
+            .package-price {
+                font-size: 28px;
+            }
+
+            .cta-bar {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-nav {
+                top: 12px;
+                right: 12px;
+                gap: 6px;
+            }
+
+            .nav-btn {
+                padding: 8px 12px;
+                font-size: 11px;
+                min-width: 65px;
+            }
+
+            .container {
+                padding: 75px 16px 20px 16px;
+            }
+
+            .main-title {
+                font-size: 20px;
+                line-height: 1.2;
+            }
+
+            .main-subtitle {
+                font-size: 13px;
+            }
+
+            .package-card {
+                padding: 16px;
+            }
+
+            .package-price {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <button class="nav-btn start" onclick="window.location.href='liquid-launch-value-walkthrough.html'">Start</button>
+        <button class="nav-btn login" onclick="alert('Login functionality coming soon')">Login</button>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="main-title">Team Liquid Influencer Marketing from $5K</h1>
+            <p class="main-subtitle">Curated streamers, dual ratings, conversion tracking, and marketing content you can reuse forever.<br>Unlike Twitch Bounty Board: Lower prices, better influencers, actual results.</p>
+        </div>
+
+        <div class="cta-bar">
+            <button class="btn btn-secondary" onclick="openComparison()">See Detailed Comparison to Twitch Bounties</button>
+        </div>
+
+        <!-- Packages Grid -->
+        <div class="packages-grid">
+            <!-- Bronze -->
+            <div class="package-card bronze">
+                <div class="package-tier">Bronze</div>
+                <div class="package-price">$5K</div>
+                <div class="package-desc">Perfect for validation</div>
+
+                <ul class="package-features">
+                    <li class="package-feature">5 hours gameplay</li>
+                    <li class="package-feature">2 influencers</li>
+                    <li class="package-feature">Dual ratings</li>
+                    <li class="package-feature">Steam tracking</li>
+                    <li class="package-feature">VODs & clips</li>
+                    <li class="package-feature">Feedback forms</li>
+                </ul>
+
+                <button class="select-btn" onclick="learnMore('bronze')">Learn More</button>
+            </div>
+
+            <!-- Silver -->
+            <div class="package-card silver">
+                <div class="package-tier">Silver</div>
+                <div class="package-price">$10K</div>
+                <div class="package-desc">Most popular choice</div>
+
+                <ul class="package-features">
+                    <li class="package-feature">15 hours gameplay</li>
+                    <li class="package-feature">4-6 influencers</li>
+                    <li class="package-feature">All Bronze features</li>
+                    <li class="package-feature">Kickstarter integration</li>
+                    <li class="package-feature">Dev interview</li>
+                    <li class="package-feature">Email list building</li>
+                    <li class="package-feature">Multi-channel reach</li>
+                    <li class="package-feature">Priority support</li>
+                </ul>
+
+                <button class="select-btn" onclick="learnMore('silver')">Learn More</button>
+            </div>
+
+            <!-- Gold -->
+            <div class="package-card gold">
+                <div class="package-tier">Gold</div>
+                <div class="package-price">$25K</div>
+                <div class="package-desc">Major launch campaigns</div>
+
+                <ul class="package-features">
+                    <li class="package-feature">40 hours gameplay</li>
+                    <li class="package-feature">6-8 influencers</li>
+                    <li class="package-feature">All Silver features</li>
+                    <li class="package-feature">Top-tier streamers</li>
+                    <li class="package-feature">Professional editing</li>
+                    <li class="package-feature">Social amplification</li>
+                    <li class="package-feature">Dedicated manager</li>
+                    <li class="package-feature">Launch coordination</li>
+                    <li class="package-feature">Premium analytics</li>
+                    <li class="package-feature">Multi-platform promo</li>
+                </ul>
+
+                <button class="select-btn" onclick="learnMore('gold')">Learn More</button>
+            </div>
+
+            <!-- Platinum -->
+            <div class="package-card platinum">
+                <div class="package-tier">Platinum</div>
+                <div class="package-price">$100K</div>
+                <div class="package-desc">Full-scale campaigns</div>
+
+                <ul class="package-features">
+                    <li class="package-feature">100+ hours</li>
+                    <li class="package-feature">Full TL roster</li>
+                    <li class="package-feature">All Gold features</li>
+                    <li class="package-feature">6-month campaign</li>
+                    <li class="package-feature">Brand integration</li>
+                    <li class="package-feature">Press support</li>
+                    <li class="package-feature">Custom content team</li>
+                    <li class="package-feature">Custom drops</li>
+                    <li class="package-feature">Tournament opportunities</li>
+                    <li class="package-feature">White-glove service</li>
+                    <li class="package-feature">Quarterly strategy reviews</li>
+                    <li class="package-feature">Executive access</li>
+                </ul>
+
+                <button class="select-btn" onclick="learnMore('platinum')">Learn More</button>
+            </div>
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="bottom-cta">
+            <h2>Ready to See How This Actually Works?</h2>
+            <button class="btn btn-primary btn-large" onclick="window.location.href='liquid-launch-value-walkthrough.html'">Continue to Value Overview →</button>
+        </div>
+    </div>
+
+    <!-- Modal for Comparison -->
+    <div class="modal" id="comparisonModal">
+        <div class="modal-close" onclick="closeComparison()">×</div>
+        <div class="modal-content">
+            <iframe id="comparisonFrame" style="width: 100%; height: 100%; border: none; border-radius: 12px;"></iframe>
+        </div>
+    </div>
+
+    <script>
+        function learnMore(tier) {
+            localStorage.setItem('selectedPackage', tier);
+            window.location.href = 'liquid-launch-value-walkthrough.html';
+        }
+
+        function openComparison() {
+            document.getElementById('comparisonFrame').src = 'comparison-5col-all-packages.html';
+            document.getElementById('comparisonModal').classList.add('active');
+        }
+
+        function closeComparison() {
+            document.getElementById('comparisonModal').classList.remove('active');
+            document.getElementById('comparisonFrame').src = '';
+        }
+
+        // Close modal on background click
+        document.getElementById('comparisonModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeComparison();
+            }
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeComparison();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influencer Portal - Liquid Launch</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(79, 209, 197, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .dashboard-container {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-section {
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .logo-icon img {
+            height: 48px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #4fd1c5 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .user-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 30px;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4fd1c5 0%, #a78bfa 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 12px;
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .user-role {
+            font-size: 13px;
+            color: #4fd1c5;
+            text-align: center;
+        }
+
+        .nav-menu {
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav-item:hover {
+            background: rgba(79, 209, 197, 0.1);
+            color: #4fd1c5;
+        }
+
+        .nav-item.active {
+            background: rgba(79, 209, 197, 0.2);
+            color: #4fd1c5;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px 40px;
+            overflow-y: auto;
+        }
+
+        .header-bar {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #94a3b8;
+        }
+
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(79, 209, 197, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 900;
+            color: #4fd1c5;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: #10b981;
+        }
+
+        /* Section */
+        .section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        /* Campaign Cards */
+        .campaign-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .campaign-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .campaign-card:hover {
+            border-color: rgba(79, 209, 197, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .campaign-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .game-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(79, 209, 197, 0.1);
+            border-radius: 12px;
+        }
+
+        .game-icon i {
+            width: 28px;
+            height: 28px;
+            color: #4fd1c5;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.assigned {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .status-badge.in-progress {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .status-badge.completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .status-badge.available {
+            background: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+        }
+
+        .game-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .game-genre {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .campaign-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .detail-label {
+            color: #94a3b8;
+        }
+
+        .detail-value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .campaign-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(79, 209, 197, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            color: #4fd1c5;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(79, 209, 197, 0.1);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .empty-description {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1f3a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .modal-close {
+            font-size: 28px;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #ffffff;
+        }
+
+        .modal-body {
+            font-size: 14px;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .info-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* View container */
+        .view-container {
+            display: none;
+        }
+
+        .view-container.active {
+            display: block;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .data-table th {
+            padding: 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table td {
+            padding: 16px;
+            font-size: 14px;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .data-table tr:hover {
+            background: rgba(79, 209, 197, 0.05);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .campaign-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <img src="https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg" alt="Team Liquid">
+                </div>
+                <div class="logo-text">LIQUID LAUNCH</div>
+            </div>
+
+            <div class="user-section">
+                <div class="user-avatar" id="userAvatar">
+                    <i data-lucide="user" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div class="user-name" id="userName">TL_StreamerName</div>
+                <div class="user-role">Team Liquid Streamer</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="switchView('dashboard')">
+                    <i data-lucide="layout-dashboard" class="nav-icon"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="switchView('campaigns')">
+                    <i data-lucide="target" class="nav-icon"></i>
+                    <span>My Campaigns</span>
+                </div>
+                <div class="nav-item" onclick="switchView('browse')">
+                    <i data-lucide="search" class="nav-icon"></i>
+                    <span>Browse Games</span>
+                </div>
+                <div class="nav-item" onclick="switchView('earnings')">
+                    <i data-lucide="dollar-sign" class="nav-icon"></i>
+                    <span>Earnings</span>
+                </div>
+                <div class="nav-item" onclick="switchView('settings')">
+                    <i data-lucide="settings" class="nav-icon"></i>
+                    <span>Settings</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="view-container active">
+                <div class="header-bar">
+                    <h1 class="page-title">Welcome Back!</h1>
+                    <p class="page-subtitle">Here's what's happening with your campaigns</p>
+                </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <div class="stat-label">Active Campaigns</div>
+                    <div class="stat-value" id="activeCampaigns">2</div>
+                    <div class="stat-change">+1 this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Hours This Month</div>
+                    <div class="stat-value" id="totalHours">8.5</div>
+                    <div class="stat-change">Of 15 committed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Earnings This Month</div>
+                    <div class="stat-value" id="earnings">$850</div>
+                    <div class="stat-change">+$425 pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Viewers</div>
+                    <div class="stat-value" id="avgViewers">1.2K</div>
+                    <div class="stat-change">+15% vs last month</div>
+                </div>
+            </div>
+
+            <!-- Assigned Campaigns -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Your Assigned Campaigns</h2>
+                </div>
+
+                <div class="campaign-grid" id="assignedCampaigns">
+                    <!-- Campaign 1 -->
+                    <div class="campaign-card" onclick="openCampaignModal('assigned-1')">
+                        <div class="campaign-header">
+                            <div class="game-icon">
+                                <i data-lucide="swords"></i>
+                            </div>
+                            <div class="status-badge in-progress">In Progress</div>
+                        </div>
+                        <div class="game-title">Shadow's Requiem</div>
+                        <div class="game-genre">Roguelike Action RPG</div>
+                        <div class="campaign-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Required Hours:</span>
+                                <span class="detail-value">5 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Completed:</span>
+                                <span class="detail-value">3.5 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Deadline:</span>
+                                <span class="detail-value">Dec 20, 2025</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Payment:</span>
+                                <span class="detail-value">$500</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn btn-primary">Start Stream</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Campaign 2 -->
+                    <div class="campaign-card" onclick="openCampaignModal('assigned-2')">
+                        <div class="campaign-header">
+                            <div class="game-icon">
+                                <i data-lucide="rocket"></i>
+                            </div>
+                            <div class="status-badge assigned">Assigned</div>
+                        </div>
+                        <div class="game-title">Stellar Colonies</div>
+                        <div class="game-genre">Strategy Simulation</div>
+                        <div class="campaign-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Required Hours:</span>
+                                <span class="detail-value">3 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Completed:</span>
+                                <span class="detail-value">0 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Deadline:</span>
+                                <span class="detail-value">Dec 25, 2025</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Payment:</span>
+                                <span class="detail-value">$350</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn btn-primary">Start Stream</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available to Opt-In -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Available Games (Opt-In)</h2>
+                </div>
+
+                <div class="campaign-grid" id="availableCampaigns">
+                    <!-- Available Campaign 1 -->
+                    <div class="campaign-card" onclick="openCampaignModal('available-1')">
+                        <div class="campaign-header">
+                            <div class="game-icon">
+                                <i data-lucide="wand-sparkles"></i>
+                            </div>
+                            <div class="status-badge available">Available</div>
+                        </div>
+                        <div class="game-title">Arcane Odyssey</div>
+                        <div class="game-genre">Turn-Based Strategy RPG</div>
+                        <div class="campaign-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Required Hours:</span>
+                                <span class="detail-value">4 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Match Score:</span>
+                                <span class="detail-value">92% match</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Deadline:</span>
+                                <span class="detail-value">Jan 5, 2026</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Payment:</span>
+                                <span class="detail-value">$425</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); optInToCampaign('available-1')">Opt In</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Available Campaign 2 -->
+                    <div class="campaign-card" onclick="openCampaignModal('available-2')">
+                        <div class="campaign-header">
+                            <div class="game-icon">
+                                <i data-lucide="ghost"></i>
+                            </div>
+                            <div class="status-badge available">Available</div>
+                        </div>
+                        <div class="game-title">Phantom Protocol</div>
+                        <div class="game-genre">Stealth Horror FPS</div>
+                        <div class="campaign-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Required Hours:</span>
+                                <span class="detail-value">5 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Match Score:</span>
+                                <span class="detail-value">88% match</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Deadline:</span>
+                                <span class="detail-value">Jan 10, 2026</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Payment:</span>
+                                <span class="detail-value">$500</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); optInToCampaign('available-2')">Opt In</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Available Campaign 3 -->
+                    <div class="campaign-card" onclick="openCampaignModal('available-3')">
+                        <div class="campaign-header">
+                            <div class="game-icon">
+                                <i data-lucide="car"></i>
+                            </div>
+                            <div class="status-badge available">Available</div>
+                        </div>
+                        <div class="game-title">Velocity Racers</div>
+                        <div class="game-genre">Arcade Racing</div>
+                        <div class="campaign-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Required Hours:</span>
+                                <span class="detail-value">3 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Match Score:</span>
+                                <span class="detail-value">76% match</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Deadline:</span>
+                                <span class="detail-value">Jan 15, 2026</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Payment:</span>
+                                <span class="detail-value">$300</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); optInToCampaign('available-3')">Opt In</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Campaigns -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Recently Completed</h2>
+                </div>
+
+                <div class="campaign-grid" id="completedCampaigns">
+                    <div class="campaign-card">
+                        <div class="campaign-header">
+                            <div class="game-icon">
+                                <i data-lucide="sword"></i>
+                            </div>
+                            <div class="status-badge completed">Completed</div>
+                        </div>
+                        <div class="game-title">Dungeon Delver</div>
+                        <div class="game-genre">Roguelike Dungeon Crawler</div>
+                        <div class="campaign-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Hours Streamed:</span>
+                                <span class="detail-value">5 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Avg Viewers:</span>
+                                <span class="detail-value">1,350</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Completed:</span>
+                                <span class="detail-value">Dec 1, 2025</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Earned:</span>
+                                <span class="detail-value">$500 ✓</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- My Campaigns View -->
+            <div id="campaignsView" class="view-container">
+                <div class="header-bar">
+                    <h1 class="page-title">My Campaigns</h1>
+                    <p class="page-subtitle">Track your active and completed campaigns</p>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Active Campaigns (2)</h2>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Game</th>
+                                <th>Progress</th>
+                                <th>Deadline</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div class="game-icon" style="width: 32px; height: 32px;">
+                                            <i data-lucide="swords" style="width: 18px; height: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <strong style="color: #ffffff; display: block;">Shadow's Requiem</strong>
+                                            <span style="font-size: 12px; color: #64748b;">Roguelike RPG</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>3.5 / 5 hours</div>
+                                    <div style="font-size: 12px; color: #10b981;">70% complete</div>
+                                </td>
+                                <td>Dec 20, 2025</td>
+                                <td><strong style="color: #4fd1c5;">$500</strong></td>
+                                <td><span class="status-badge in-progress">In Progress</span></td>
+                                <td><button class="btn btn-primary" style="padding: 6px 16px; font-size: 12px;">Start Stream</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div class="game-icon" style="width: 32px; height: 32px;">
+                                            <i data-lucide="rocket" style="width: 18px; height: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <strong style="color: #ffffff; display: block;">Stellar Colonies</strong>
+                                            <span style="font-size: 12px; color: #64748b;">Strategy Sim</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>0 / 3 hours</div>
+                                    <div style="font-size: 12px; color: #64748b;">Not started</div>
+                                </td>
+                                <td>Dec 25, 2025</td>
+                                <td><strong style="color: #4fd1c5;">$350</strong></td>
+                                <td><span class="status-badge assigned">Assigned</span></td>
+                                <td><button class="btn btn-primary" style="padding: 6px 16px; font-size: 12px;">Start Stream</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Completed Campaigns (1)</h2>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Game</th>
+                                <th>Hours Streamed</th>
+                                <th>Avg Viewers</th>
+                                <th>Completed</th>
+                                <th>Payment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div class="game-icon" style="width: 32px; height: 32px;">
+                                            <i data-lucide="sword" style="width: 18px; height: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <strong style="color: #ffffff; display: block;">Dungeon Delver</strong>
+                                            <span style="font-size: 12px; color: #64748b;">Roguelike</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>5 hours</td>
+                                <td>1,350</td>
+                                <td>Dec 1, 2025</td>
+                                <td><strong style="color: #10b981;">$500 ✓</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Browse Games View -->
+            <div id="browseView" class="view-container">
+                <div class="header-bar">
+                    <h1 class="page-title">Browse Available Games</h1>
+                    <p class="page-subtitle">Opt into campaigns that match your audience</p>
+                </div>
+
+                <div class="campaign-grid">
+                    <div class="campaign-card" onclick="openCampaignModal('available-1')">
+                        <div class="campaign-header">
+                            <div class="game-icon">
+                                <i data-lucide="wand-sparkles"></i>
+                            </div>
+                            <div class="status-badge available">Available</div>
+                        </div>
+                        <div class="game-title">Arcane Odyssey</div>
+                        <div class="game-genre">Turn-Based Strategy RPG</div>
+                        <div class="campaign-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Required Hours:</span>
+                                <span class="detail-value">4 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Match Score:</span>
+                                <span class="detail-value">92% match</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Deadline:</span>
+                                <span class="detail-value">Jan 5, 2026</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Payment:</span>
+                                <span class="detail-value">$425</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); optInToCampaign('available-1')">Opt In</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="campaign-card" onclick="openCampaignModal('available-2')">
+                        <div class="campaign-header">
+                            <div class="game-icon">
+                                <i data-lucide="ghost"></i>
+                            </div>
+                            <div class="status-badge available">Available</div>
+                        </div>
+                        <div class="game-title">Phantom Protocol</div>
+                        <div class="game-genre">Stealth Horror FPS</div>
+                        <div class="campaign-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Required Hours:</span>
+                                <span class="detail-value">5 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Match Score:</span>
+                                <span class="detail-value">88% match</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Deadline:</span>
+                                <span class="detail-value">Jan 10, 2026</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Payment:</span>
+                                <span class="detail-value">$500</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); optInToCampaign('available-2')">Opt In</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="campaign-card" onclick="openCampaignModal('available-3')">
+                        <div class="campaign-header">
+                            <div class="game-icon">
+                                <i data-lucide="car"></i>
+                            </div>
+                            <div class="status-badge available">Available</div>
+                        </div>
+                        <div class="game-title">Velocity Racers</div>
+                        <div class="game-genre">Arcade Racing</div>
+                        <div class="campaign-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Required Hours:</span>
+                                <span class="detail-value">3 hours</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Match Score:</span>
+                                <span class="detail-value">76% match</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Deadline:</span>
+                                <span class="detail-value">Jan 15, 2026</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Payment:</span>
+                                <span class="detail-value">$300</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); optInToCampaign('available-3')">Opt In</button>
+                            <button class="btn btn-secondary">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings View -->
+            <div id="earningsView" class="view-container">
+                <div class="header-bar">
+                    <h1 class="page-title">Earnings</h1>
+                    <p class="page-subtitle">Track your payments and performance</p>
+                </div>
+
+                <div class="stats-overview">
+                    <div class="stat-card">
+                        <div class="stat-label">This Month</div>
+                        <div class="stat-value">$850</div>
+                        <div class="stat-change">+$425 pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Earned</div>
+                        <div class="stat-value">$3.2K</div>
+                        <div class="stat-change">All time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg Per Campaign</div>
+                        <div class="stat-value">$450</div>
+                        <div class="stat-change">7 campaigns</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Next Payout</div>
+                        <div class="stat-value">Dec 30</div>
+                        <div class="stat-change">$425 pending</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Payment History</h2>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Campaign</th>
+                                <th>Hours</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dec 15, 2025</td>
+                                <td>Shadow's Requiem</td>
+                                <td>3.5 hours</td>
+                                <td><strong style="color: #fbbf24;">$350</strong></td>
+                                <td><span class="status-badge assigned">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>Dec 1, 2025</td>
+                                <td>Dungeon Delver</td>
+                                <td>5 hours</td>
+                                <td><strong style="color: #10b981;">$500</strong></td>
+                                <td><span class="status-badge completed">Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td>Nov 15, 2025</td>
+                                <td>Mystic Realms</td>
+                                <td>4 hours</td>
+                                <td><strong style="color: #10b981;">$450</strong></td>
+                                <td><span class="status-badge completed">Paid</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settingsView" class="view-container">
+                <div class="header-bar">
+                    <h1 class="page-title">Settings</h1>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title" style="margin-bottom: 24px;">Profile Settings</h2>
+
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px;">Display Name</label>
+                        <input type="text" value="TL_StreamerName" style="width: 100%; max-width: 400px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 12px 16px; color: #ffffff; font-size: 14px;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px;">Email</label>
+                        <input type="email" value="streamer@teamliquid.com" style="width: 100%; max-width: 400px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 12px 16px; color: #ffffff; font-size: 14px;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px;">Twitch Username</label>
+                        <input type="text" value="TL_StreamerName" style="width: 100%; max-width: 400px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 12px 16px; color: #ffffff; font-size: 14px;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px;">Preferred Game Genres</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            <span class="status-badge in-progress" style="cursor: pointer;">RPG</span>
+                            <span class="status-badge in-progress" style="cursor: pointer;">Strategy</span>
+                            <span class="status-badge available" style="cursor: pointer; opacity: 0.5;">FPS</span>
+                            <span class="status-badge available" style="cursor: pointer; opacity: 0.5;">Horror</span>
+                            <span class="status-badge in-progress" style="cursor: pointer;">Roguelike</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px;">Notifications</label>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span style="font-size: 14px; color: #cbd5e1;">Email when new campaigns are available</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span style="font-size: 14px; color: #cbd5e1;">Email when campaigns are assigned</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <input type="checkbox" style="width: 18px; height: 18px;">
+                                <span style="font-size: 14px; color: #cbd5e1;">Weekly performance summary</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Modal -->
+    <div class="modal" id="campaignModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Campaign Details</h2>
+                <div class="modal-close" onclick="closeCampaignModal()">×</div>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Game Title</div>
+                        <div class="info-value" id="modalGameTitle">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Genre</div>
+                        <div class="info-value" id="modalGenre">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Required Hours</div>
+                        <div class="info-value" id="modalHours">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Payment</div>
+                        <div class="info-value" id="modalPayment">-</div>
+                    </div>
+                </div>
+
+                <div style="margin: 24px 0;">
+                    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #4fd1c5;">Game Description</h3>
+                    <p id="modalDescription" style="color: #cbd5e1; line-height: 1.6;">-</p>
+                </div>
+
+                <div style="margin: 24px 0;">
+                    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #4fd1c5;">Key Features</h3>
+                    <ul id="modalFeatures" style="color: #cbd5e1; line-height: 1.8; padding-left: 20px;">
+                        <li>Feature list will appear here</li>
+                    </ul>
+                </div>
+
+                <div style="margin: 24px 0;">
+                    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #4fd1c5;">Stream Guidelines</h3>
+                    <ul style="color: #cbd5e1; line-height: 1.8; padding-left: 20px;">
+                        <li>Include game title in stream title</li>
+                        <li>Add Steam wishlist link in description</li>
+                        <li>Play for minimum required hours</li>
+                        <li>Provide honest feedback</li>
+                        <li>Fill out post-stream feedback form</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 32px; display: flex; gap: 12px;">
+                    <button class="btn btn-primary" style="flex: 1;">Start Campaign</button>
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="closeCampaignModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.view-container').forEach(view => {
+                view.classList.remove('active');
+            });
+
+            // Show selected view
+            const viewId = viewName + 'View';
+            document.getElementById(viewId).classList.add('active');
+
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Reinitialize icons after view switch
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 10);
+
+            // Scroll to top
+            document.querySelector('.main-content').scrollTop = 0;
+        }
+
+        function openCampaignModal(campaignId) {
+            // Sample campaign data
+            const campaigns = {
+                'assigned-1': {
+                    title: 'Shadow\'s Requiem',
+                    genre: 'Roguelike Action RPG',
+                    hours: '5 hours',
+                    payment: '$500',
+                    description: 'A dark fantasy roguelike where every death makes you stronger. Battle through procedurally generated dungeons, collect powerful artifacts, and uncover the mystery of the Shadow Realm.',
+                    features: ['Procedurally generated dungeons', 'Deep progression system', 'Over 100 unique weapons and spells', 'Boss rush mode', 'Daily challenges']
+                },
+                'assigned-2': {
+                    title: 'Stellar Colonies',
+                    genre: 'Strategy Simulation',
+                    hours: '3 hours',
+                    payment: '$350',
+                    description: 'Build and manage thriving space colonies across the galaxy. Balance resources, research new technologies, and defend against alien threats in this deep strategy simulation.',
+                    features: ['Colony management on multiple planets', 'Tech tree with 50+ upgrades', 'Multiplayer cooperative mode', 'Random events and challenges', 'Sandbox mode']
+                },
+                'available-1': {
+                    title: 'Arcane Odyssey',
+                    genre: 'Turn-Based Strategy RPG',
+                    hours: '4 hours',
+                    payment: '$425',
+                    description: 'A tactical RPG where positioning and spell combos are everything. Assemble a party of mages, warriors, and rogues to save the realm from an ancient evil.',
+                    features: ['Tactical grid-based combat', '15+ unique character classes', 'Branching story with multiple endings', 'Party synergy system', 'New Game+ mode']
+                }
+            };
+
+            const campaign = campaigns[campaignId];
+            if (!campaign) return;
+
+            document.getElementById('modalGameTitle').textContent = campaign.title;
+            document.getElementById('modalGenre').textContent = campaign.genre;
+            document.getElementById('modalHours').textContent = campaign.hours;
+            document.getElementById('modalPayment').textContent = campaign.payment;
+            document.getElementById('modalDescription').textContent = campaign.description;
+
+            const featuresList = document.getElementById('modalFeatures');
+            featuresList.innerHTML = campaign.features.map(f => `<li>${f}</li>`).join('');
+
+            document.getElementById('campaignModal').classList.add('active');
+        }
+
+        function closeCampaignModal() {
+            document.getElementById('campaignModal').classList.remove('active');
+        }
+
+        function optInToCampaign(campaignId) {
+            alert('You have opted in to this campaign! The game developer will be notified and you\'ll receive confirmation within 24 hours.');
+        }
+
+        // Close modal on background click
+        document.getElementById('campaignModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCampaignModal();
+            }
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            // Load user info (in production this would come from auth)
+            const influencerName = localStorage.getItem('liquidLaunch_influencer_name') || 'TL_StreamerName';
+            document.getElementById('userName').textContent = influencerName;
+
+            // Initialize Lucide icons
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
