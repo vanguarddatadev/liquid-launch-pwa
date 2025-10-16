@@ -4,6 +4,7 @@ const urlsToCache = [
   '/index.html',
   '/liquid-launch-rotating-hero.html',
   '/liquid-launch-packages-main.html',
+  '/liquid-launch-value-walkthrough.html',
   '/liquid-launch-manager-portal.html',
   '/liquid-launch-influencer-portal.html',
   '/liquid-launch-signup.html',
