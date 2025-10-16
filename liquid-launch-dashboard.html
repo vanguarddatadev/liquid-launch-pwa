@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Launch - Game Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(79, 209, 197, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .page-header {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(79, 209, 197, 0.2);
+        }
+
+        .brand-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .game-info {
+            flex: 1;
+        }
+
+        .org-name {
+            font-size: 14px;
+            color: #4fd1c5;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .game-title {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #4fd1c5 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            line-height: 1.1;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #94a3b8;
+        }
+
+        .rotating-word {
+            color: #4fd1c5;
+            font-weight: 800;
+            display: inline-block;
+            min-width: 200px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stage-selector {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stage-pill {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stage-pill:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .stage-pill.active {
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            border-color: #4fd1c5;
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 209, 197, 0.4);
+        }
+
+        /* Metrics Grid - TOP POSITION */
+        .metrics-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #4fd1c5;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+        }
+
+        .metric-box {
+            background: rgba(79, 209, 197, 0.1);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .metric-box:hover {
+            background: rgba(79, 209, 197, 0.15);
+            border-color: rgba(79, 209, 197, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        /* Rating Badges - SIDE BY SIDE & SMALLER */
+        .ratings-container {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .badge-container {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
+        }
+
+        .brand-header {
+            background: linear-gradient(90deg, #0066ff, #00ccff);
+            padding: 6px 18px;
+            border-radius: 6px;
+            font-size: 0.65em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 3px 10px rgba(0, 102, 255, 0.3);
+        }
+
+        .brand-header.fire {
+            background: linear-gradient(90deg, #ff4500, #ff8c00);
+            box-shadow: 0 3px 10px rgba(255, 69, 0, 0.4);
+        }
+
+        .brand-header.hot {
+            background: linear-gradient(90deg, #dc143c, #ff6347);
+            box-shadow: 0 3px 10px rgba(220, 20, 60, 0.4);
+        }
+
+        .brand-header.community {
+            background: linear-gradient(90deg, #ff8c00, #ffd700);
+            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.4);
+        }
+
+        .split-badge-bordered {
+            width: 180px;
+            height: 90px;
+            display: flex;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .split-badge-bordered:hover {
+            transform: translateY(-3px);
+        }
+
+        .split-badge-fire {
+            border-color: #ff4500;
+            box-shadow: 0 5px 30px rgba(255, 69, 0, 0.6);
+            animation: pulse-fire 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-fire {
+            0%, 100% { box-shadow: 0 5px 30px rgba(255, 69, 0, 0.6); }
+            50% { box-shadow: 0 5px 40px rgba(255, 69, 0, 0.9), 0 0 60px rgba(255, 140, 0, 0.4); }
+        }
+
+        .split-badge-hot {
+            border-color: #dc143c;
+            box-shadow: 0 5px 25px rgba(220, 20, 60, 0.5);
+        }
+
+        .split-left-fire {
+            flex: 1;
+            background: linear-gradient(135deg, #ff4500, #ff8c00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .split-left-fire::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 0, 0.6) 0%, rgba(255, 140, 0, 0.3) 40%, transparent 70%);
+            animation: flame-flicker 1.5s ease-in-out infinite;
+        }
+
+        @keyframes flame-flicker {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -45%) scale(1.2); opacity: 1; }
+        }
+
+        .split-left-hot {
+            flex: 1;
+            background: linear-gradient(135deg, #dc143c, #ff6347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .split-left-hot::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(255, 69, 0, 0.4) 0%, transparent 70%);
+            animation: heat-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes heat-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 0.9; }
+        }
+
+        .split-logo-container {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .split-logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-fire-effect {
+            filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 0, 0.8))
+                    drop-shadow(0 0 15px rgba(255, 140, 0, 0.6));
+            animation: logo-fire-glow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes logo-fire-glow {
+            0%, 100% {
+                filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 0, 0.8))
+                        drop-shadow(0 0 15px rgba(255, 140, 0, 0.6));
+            }
+            50% {
+                filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(255, 255, 0, 1))
+                        drop-shadow(0 0 25px rgba(255, 69, 0, 0.8));
+            }
+        }
+
+        .logo-hot-effect {
+            filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(255, 69, 0, 0.9));
+            animation: logo-heat-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes logo-heat-glow {
+            0%, 100% { filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(255, 69, 0, 0.9)); }
+            50% { filter: brightness(0) invert(1) drop-shadow(0 0 20px rgba(255, 69, 0, 1)); }
+        }
+
+        .fire-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .fire-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(255, 255, 0, 1), rgba(255, 140, 0, 0));
+            border-radius: 50%;
+            animation: particle-float 2s ease-in-out infinite;
+        }
+
+        .fire-particle:nth-child(1) { left: 20%; animation-delay: 0s; }
+        .fire-particle:nth-child(2) { left: 50%; animation-delay: 0.5s; }
+        .fire-particle:nth-child(3) { left: 80%; animation-delay: 1s; }
+
+        @keyframes particle-float {
+            0% { bottom: 0%; opacity: 1; transform: translateX(0px); }
+            100% { bottom: 100%; opacity: 0; transform: translateX(10px); }
+        }
+
+        .split-right {
+            flex: 1;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 8px;
+            gap: 2px;
+        }
+
+        .split-score {
+            font-size: 1.8em;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .score-fire {
+            color: #ff6347;
+            text-shadow: 0 0 15px rgba(255, 69, 0, 0.8);
+        }
+
+        .score-hot {
+            color: #ff6347;
+            text-shadow: 0 0 10px rgba(220, 20, 60, 0.6);
+        }
+
+        .split-tier-label {
+            font-size: 0.65em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tier-label-fire {
+            color: #ff8c00;
+        }
+
+        .tier-label-hot {
+            color: #ff6347;
+        }
+
+        /* Conversion Metrics */
+        .conversion-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .conversion-box {
+            background: rgba(79, 209, 197, 0.1);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .conversion-box:hover {
+            background: rgba(79, 209, 197, 0.15);
+            transform: translateY(-3px);
+            border-color: rgba(79, 209, 197, 0.5);
+        }
+
+        .conversion-label {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .conversion-value {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .conversion-change {
+            font-size: 14px;
+            color: #10b981;
+            margin-top: 6px;
+            font-weight: 700;
+        }
+
+        /* Completion Progress */
+        .completion-container {
+            margin-top: 20px;
+        }
+
+        .completion-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .completion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .completion-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #cbd5e1;
+        }
+
+        .completion-percentage {
+            font-size: 18px;
+            font-weight: 900;
+            color: #4fd1c5;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4fd1c5 0%, #10b981 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            grid-column: 1 / -1;
+        }
+
+        .quote-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #4fd1c5;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+        }
+
+        .quote-text {
+            font-size: 14px;
+            color: #cbd5e1;
+            font-style: italic;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .quote-author {
+            font-size: 12px;
+            color: #4fd1c5;
+            font-weight: 700;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(26, 31, 58, 0.95);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 32px;
+            color: #94a3b8;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #4fd1c5;
+        }
+
+        .modal-title {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .modal-body {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #cbd5e1;
+        }
+
+        .modal-body h3 {
+            color: #4fd1c5;
+            font-size: 20px;
+            margin: 20px 0 10px 0;
+        }
+
+        .modal-body ul {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .modal-body li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body li:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .game-title {
+                font-size: 36px;
+            }
+
+            .ratings-container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .conversion-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="brand-section">
+                <div class="game-info">
+                    <div class="org-name">Indie Studio Games</div>
+                    <h1 class="game-title">Mystery Dungeon Tactics</h1>
+                    <p class="tagline">Powering your games <span class="rotating-word" id="rotating-word">launch</span></p>
+                </div>
+                <div class="stage-selector">
+                    <div class="stage-pill" onclick="selectStage(this, 'video')">Video</div>
+                    <div class="stage-pill" onclick="selectStage(this, 'playable')">Playable Slice</div>
+                    <div class="stage-pill active" onclick="selectStage(this, 'demo')">Demo</div>
+                    <div class="stage-pill" onclick="selectStage(this, 'launch')">Launch</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Section - TOP POSITION -->
+        <div class="metrics-section">
+            <div class="section-title">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M3 3v18h18"></path>
+                    <path d="M18 17V9"></path>
+                    <path d="M13 17V5"></path>
+                    <path d="M8 17v-3"></path>
+                </svg>
+                Campaign Metrics
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-box" onclick="showModal('streams-modal')">
+                    <div class="metric-value">8</div>
+                    <div class="metric-label">Streams</div>
+                </div>
+                <div class="metric-box" onclick="showModal('viewers-modal')">
+                    <div class="metric-value">3.2K</div>
+                    <div class="metric-label">Total Viewers</div>
+                </div>
+                <div class="metric-box" onclick="showModal('vods-modal')">
+                    <div class="metric-value">4</div>
+                    <div class="metric-label">VODs</div>
+                </div>
+                <div class="metric-box" onclick="showModal('community-reviews-modal')">
+                    <div class="metric-value">287</div>
+                    <div class="metric-label">Reviews</div>
+                </div>
+                <div class="metric-box" onclick="showModal('totalviews-modal')">
+                    <div class="metric-value">721K</div>
+                    <div class="metric-label">Total Views</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-value">94%</div>
+                    <div class="metric-label">Sentiment</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Left Column: Ratings & Conversions -->
+            <div class="section-card">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    Ratings & Performance
+                </div>
+
+                <div class="ratings-container">
+                    <div class="badge-container" onclick="showModal('teamliquid-modal')">
+                        <div class="brand-header hot">TEAM LIQUID</div>
+                        <div class="split-badge-bordered split-badge-hot">
+                            <div class="split-left-hot">
+                                <div class="split-logo-container">
+                                    <img src="https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg"
+                                         alt="Team Liquid" class="split-logo logo-hot-effect">
+                                </div>
+                            </div>
+                            <div class="split-right">
+                                <div class="split-score score-hot">85</div>
+                                <div class="split-tier-label tier-label-hot">HOT</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="badge-container" onclick="showModal('community-modal')">
+                        <div class="brand-header fire community">COMMUNITY</div>
+                        <div class="split-badge-bordered split-badge-fire">
+                            <div class="split-left-fire">
+                                <div class="fire-particles">
+                                    <div class="fire-particle"></div>
+                                    <div class="fire-particle"></div>
+                                    <div class="fire-particle"></div>
+                                </div>
+                                <div class="split-logo-container">
+                                    <span style="font-size: 2.8em; position: relative; z-index: 2; filter: drop-shadow(0 0 8px rgba(255, 255, 0, 0.8)) drop-shadow(0 0 15px rgba(255, 140, 0, 0.6));">⭐</span>
+                                </div>
+                            </div>
+                            <div class="split-right">
+                                <div class="split-score score-fire">97</div>
+                                <div class="split-tier-label tier-label-fire">FIRE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <div class="section-title" style="margin-bottom: 16px;">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                        Conversion Metrics
+                    </div>
+                    <div class="conversion-grid">
+                        <div class="conversion-box" onclick="showModal('wishlists-modal')">
+                            <div class="conversion-label">Wishlists</div>
+                            <div class="conversion-value">+717%</div>
+                            <div class="conversion-change">↑ 624 new</div>
+                        </div>
+                        <div class="conversion-box">
+                            <div class="conversion-label">Kickstarter</div>
+                            <div class="conversion-value">$12.4K</div>
+                            <div class="conversion-change">↑ 87 backers</div>
+                        </div>
+                        <div class="conversion-box">
+                            <div class="conversion-label">Demo Downloads</div>
+                            <div class="conversion-value">1,247</div>
+                            <div class="conversion-change">↑ 892%</div>
+                        </div>
+                        <div class="conversion-box">
+                            <div class="conversion-label">Purchases</div>
+                            <div class="conversion-value">189</div>
+                            <div class="conversion-change">↑ $3.2K revenue</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Campaign Progress -->
+            <div class="section-card">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Campaign Progress
+                </div>
+
+                <div class="completion-container">
+                    <div class="completion-item">
+                        <div class="completion-header">
+                            <div class="completion-title">Content Creation</div>
+                            <div class="completion-percentage">80%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+
+                    <div class="completion-item">
+                        <div class="completion-header">
+                            <div class="completion-title">Outreach & PR</div>
+                            <div class="completion-percentage">65%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                    </div>
+
+                    <div class="completion-item">
+                        <div class="completion-header">
+                            <div class="completion-title">Streamer Campaign</div>
+                            <div class="completion-percentage">95%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 95%"></div>
+                        </div>
+                    </div>
+
+                    <div class="completion-item">
+                        <div class="completion-header">
+                            <div class="completion-title">Community Engagement</div>
+                            <div class="completion-percentage">72%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 72%"></div>
+                        </div>
+                    </div>
+
+                    <div class="completion-item">
+                        <div class="completion-header">
+                            <div class="completion-title">Reviews & Ratings</div>
+                            <div class="completion-percentage">88%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 88%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="section-card reviews-section">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Featured Reviews
+                </div>
+                <div class="quote-box">
+                    <div class="quote-text">Amazing game, must play for strategy gamers!</div>
+                    <div class="quote-author">JupiterJazz - Team Liquid</div>
+                </div>
+                <div class="quote-box">
+                    <div class="quote-text">Best puzzler with horror elements I've ever played for an indie</div>
+                    <div class="quote-author">Femeneny - Team Liquid</div>
+                </div>
+                <div class="quote-box">
+                    <div class="quote-text">The attention to detail in this game is remarkable. Every mechanic feels intentional.</div>
+                    <div class="quote-author">TacticalGamer - Team Liquid</div>
+                </div>
+                <div class="quote-box">
+                    <div class="quote-text">I was skeptical at first but this game won me over completely. Hidden gem!</div>
+                    <div class="quote-author">StreamerPro - Team Liquid</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="teamliquid-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('teamliquid-modal')">&times;</span>
+            <h2 class="modal-title">Team Liquid Rating</h2>
+            <div class="modal-body">
+                <p>The Team Liquid rating represents the collective assessment from our network of creators who streamed your game during the promotion campaign.</p>
+                <h3>How It Works:</h3>
+                <ul>
+                    <li>✅ Each Team Liquid creator rates gameplay quality, innovation, and entertainment value</li>
+                    <li>✅ Ratings are aggregated across all streamers to produce the overall score</li>
+                    <li>✅ 85% indicates "Hot" status - highly recommended by our creator network</li>
+                    <li>✅ This rating helps future players discover quality titles</li>
+                </ul>
+                <h3>Rating Scale:</h3>
+                <ul>
+                    <li>🔥 <strong>90%+ = Fire</strong> - Exceptional game, must-play</li>
+                    <li>🌟 <strong>80-89% = Hot</strong> - Highly recommended</li>
+                    <li>👍 <strong>70-79% = Good</strong> - Solid experience</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="community-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('community-modal')">&times;</span>
+            <h2 class="modal-title">Community Rating</h2>
+            <div class="modal-body">
+                <p>The Community rating reflects how viewers and players responded to your game during and after the promotion campaign.</p>
+                <h3>How It Works:</h3>
+                <ul>
+                    <li>✅ Based on viewer engagement during streams (chat sentiment, follows, subscriptions)</li>
+                    <li>✅ Post-stream feedback from community members who tried the game</li>
+                    <li>✅ Steam reviews, wishlists, and purchase behavior tracked</li>
+                    <li>✅ 97% indicates "Fire" status - community absolutely loved it</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="wishlists-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('wishlists-modal')">&times;</span>
+            <h2 class="modal-title">Wishlist Growth</h2>
+            <div class="modal-body">
+                <p>Your game saw a +717% increase in Steam wishlists during the promotion campaign.</p>
+                <h3>Growth Timeline:</h3>
+                <ul>
+                    <li><strong>Pre-Campaign:</strong> 87 wishlists (baseline)</li>
+                    <li><strong>During Campaign (Week 1):</strong> +312 wishlists</li>
+                    <li><strong>During Campaign (Week 2):</strong> +189 wishlists</li>
+                    <li><strong>Post-Campaign (2 weeks):</strong> +123 wishlists</li>
+                    <li><strong>Total After Campaign:</strong> 711 wishlists</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="streams-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('streams-modal')">&times;</span>
+            <h2 class="modal-title">Streams Breakdown</h2>
+            <div class="modal-body">
+                <p>Your game was streamed by 8 different Team Liquid creators across multiple platforms.</p>
+                <h3>Stream Details:</h3>
+                <ul>
+                    <li><strong>JupiterJazz:</strong> 2.5hr stream on Twitch - 487 viewers</li>
+                    <li><strong>Femeneny:</strong> 3hr stream on Twitch - 392 viewers</li>
+                    <li><strong>TacticalGamer:</strong> 1.5hr stream on YouTube - 284 viewers</li>
+                    <li><strong>StreamerPro:</strong> 2hr stream on Twitch - 312 viewers</li>
+                    <li><strong>And 4 more...</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewers-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('viewers-modal')">&times;</span>
+            <h2 class="modal-title">Viewer Demographics</h2>
+            <div class="modal-body">
+                <p>Your game reached 3,200 unique viewers across all streams.</p>
+                <h3>Age Groups:</h3>
+                <ul>
+                    <li><strong>18-24:</strong> 42% - Young adult gamers</li>
+                    <li><strong>25-34:</strong> 38% - Core gaming demographic</li>
+                    <li><strong>35-44:</strong> 15% - Mature gamers</li>
+                    <li><strong>45+:</strong> 5% - Older gaming enthusiasts</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="vods-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('vods-modal')">&times;</span>
+            <h2 class="modal-title">VOD Details</h2>
+            <div class="modal-body">
+                <p>You own the rights to 4 Video-On-Demand assets forever.</p>
+                <h3>What You Can Do With VODs:</h3>
+                <ul>
+                    <li>✅ Upload to your own YouTube channel</li>
+                    <li>✅ Use in Steam store page videos</li>
+                    <li>✅ Share on social media</li>
+                    <li>✅ Embed on your website or press kit</li>
+                    <li>✅ Use forever - no time limit</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="community-reviews-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('community-reviews-modal')">&times;</span>
+            <h2 class="modal-title">Community Reviews</h2>
+            <div class="modal-body">
+                <p>Your game received 287+ reviews from community members.</p>
+                <h3>Review Sentiment:</h3>
+                <ul>
+                    <li>⭐⭐⭐⭐⭐ <strong>5 Stars:</strong> 84% - "Overwhelmingly Positive"</li>
+                    <li>⭐⭐⭐⭐ <strong>4 Stars:</strong> 13% - "Very Positive"</li>
+                    <li>⭐⭐⭐ <strong>3 Stars:</strong> 2% - "Mixed"</li>
+                    <li>⭐⭐ <strong>2 Stars or below:</strong> 1% - "Negative"</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="totalviews-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('totalviews-modal')">&times;</span>
+            <h2 class="modal-title">Total Views Breakdown</h2>
+            <div class="modal-body">
+                <p>Your game received 721,000 total views across all platforms.</p>
+                <h3>Platform Breakdown:</h3>
+                <ul>
+                    <li>🟣 <strong>Twitch Live:</strong> 425K views (59%)</li>
+                    <li>🔴 <strong>YouTube VODs:</strong> 209K views (29%)</li>
+                    <li>🐦 <strong>Social Media:</strong> 87K views (12%)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Rotating tagline words
+        const words = ['launch', 'sales', 'hype', 'marketing content', 'feedback'];
+        let currentIndex = 0;
+
+        function rotateWord() {
+            const wordElement = document.getElementById('rotating-word');
+            currentIndex = (currentIndex + 1) % words.length;
+            wordElement.style.animation = 'none';
+            setTimeout(() => {
+                wordElement.textContent = words[currentIndex];
+                wordElement.style.animation = 'fadeIn 0.5s ease-in-out';
+            }, 10);
+        }
+
+        setInterval(rotateWord, 3000);
+
+        // Stage selection
+        function selectStage(element, stage) {
+            document.querySelectorAll('.stage-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
+            element.classList.add('active');
+            console.log('Selected stage:', stage);
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(modal => {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
