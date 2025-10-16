@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Liquid Launch Works - Value Overview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Sticky CTA */
+        .sticky-cta {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+        }
+
+        .sticky-cta .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4fd1c5 0%, #10b981 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 209, 197, 0.4);
+        }
+
+        /* Value Section */
+        .value-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 60px 40px 40px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow-y: auto;
+        }
+
+        .value-section.hidden {
+            display: none;
+        }
+
+        .value-badge {
+            display: inline-block;
+            background: rgba(79, 209, 197, 0.2);
+            border: 1px solid rgba(79, 209, 197, 0.3);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #4fd1c5;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .value-icon {
+            display: none;
+        }
+
+        .value-title {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            line-height: 1.1;
+        }
+
+        .value-description {
+            font-size: 16px;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .value-content {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+        }
+
+        .benefit-list {
+            list-style: none;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        .benefit-icon {
+            color: #10b981;
+            font-size: 16px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .example-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid #4fd1c5;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .example-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #4fd1c5;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .example-text {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .metric-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 900;
+            color: #4fd1c5;
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-large {
+            padding: 12px 28px;
+            font-size: 15px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            color: #4fd1c5;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(79, 209, 197, 0.1);
+        }
+
+        .progress-indicator {
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 12px;
+        }
+
+        /* Team Liquid Rating Badges */
+        .badge-showcase {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 24px 0;
+            flex-wrap: wrap;
+        }
+
+        .split-badge-bordered {
+            width: 200px;
+            height: 100px;
+            display: flex;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .split-badge-fire {
+            border-color: #ff4500;
+            box-shadow: 0 5px 30px rgba(255, 69, 0, 0.6);
+            animation: pulse-fire 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-fire {
+            0%, 100% { box-shadow: 0 5px 30px rgba(255, 69, 0, 0.6); }
+            50% { box-shadow: 0 5px 40px rgba(255, 69, 0, 0.9), 0 0 60px rgba(255, 140, 0, 0.4); }
+        }
+
+        .split-left-fire {
+            flex: 1;
+            background: linear-gradient(135deg, #ff4500, #ff8c00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .split-left-fire::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 0, 0.6) 0%, rgba(255, 140, 0, 0.3) 40%, transparent 70%);
+            animation: flame-flicker 1.5s ease-in-out infinite;
+        }
+
+        @keyframes flame-flicker {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, -45%) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .fire-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .fire-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(255, 255, 0, 1), rgba(255, 140, 0, 0));
+            border-radius: 50%;
+            animation: particle-float 2s ease-in-out infinite;
+        }
+
+        .fire-particle:nth-child(1) {
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .fire-particle:nth-child(2) {
+            left: 50%;
+            animation-delay: 0.5s;
+        }
+
+        .fire-particle:nth-child(3) {
+            left: 80%;
+            animation-delay: 1s;
+        }
+
+        @keyframes particle-float {
+            0% {
+                bottom: 0%;
+                opacity: 1;
+                transform: translateX(0px);
+            }
+            100% {
+                bottom: 100%;
+                opacity: 0;
+                transform: translateX(10px);
+            }
+        }
+
+        .split-logo-container {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .split-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-fire-effect {
+            filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 0, 0.8))
+                    drop-shadow(0 0 15px rgba(255, 140, 0, 0.6));
+            animation: logo-fire-glow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes logo-fire-glow {
+            0%, 100% {
+                filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 0, 0.8))
+                        drop-shadow(0 0 15px rgba(255, 140, 0, 0.6));
+            }
+            50% {
+                filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(255, 255, 0, 1))
+                        drop-shadow(0 0 25px rgba(255, 69, 0, 0.8));
+            }
+        }
+
+        .split-right {
+            flex: 1;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 10px;
+            gap: 3px;
+        }
+
+        .brand-text-integrated {
+            font-size: 0.55em;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .split-score {
+            font-size: 2em;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .score-fire {
+            color: #ff6347;
+            text-shadow: 0 0 15px rgba(255, 69, 0, 0.8);
+        }
+
+        .split-tier-label {
+            font-size: 0.7em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tier-label-fire {
+            color: #ff8c00;
+        }
+
+        .split-badge-good {
+            border-color: #00ccff;
+            box-shadow: 0 5px 20px rgba(0, 102, 255, 0.4);
+        }
+
+        .split-left-good {
+            flex: 1;
+            background: linear-gradient(135deg, #0066ff, #00ccff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-good {
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .tier-label-good {
+            color: #00ccff;
+        }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(79, 209, 197, 0.2);
+        }
+
+        .dashboard-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4fd1c5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-link {
+            font-size: 11px;
+            color: #94a3b8;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .dashboard-link:hover {
+            color: #4fd1c5;
+        }
+
+        .mini-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .mini-metric-box {
+            background: rgba(79, 209, 197, 0.1);
+            border: 1px solid rgba(79, 209, 197, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .mini-metric-value {
+            font-size: 20px;
+            font-weight: 900;
+            color: #4fd1c5;
+            margin-bottom: 2px;
+        }
+
+        .mini-metric-label {
+            font-size: 10px;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .dashboard-conversions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .mini-conversion-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .mini-conversion-label {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .mini-conversion-value {
+            font-size: 16px;
+            font-weight: 900;
+            color: #10b981;
+        }
+
+        /* Dashboard Modal */
+        .dashboard-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .dashboard-modal.active {
+            display: block;
+        }
+
+        .dashboard-modal-content {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 40px;
+            position: relative;
+        }
+
+        .dashboard-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-modal-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #4fd1c5;
+        }
+
+        .dashboard-modal-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dashboard-modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #4fd1c5;
+        }
+
+        .dashboard-screenshots {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .dashboard-screenshot {
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid rgba(79, 209, 197, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-example {
+            background: rgba(79, 209, 197, 0.1);
+            border: 2px solid rgba(79, 209, 197, 0.4);
+            color: #4fd1c5;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+            margin: 12px auto 0 auto;
+            width: fit-content;
+            text-align: center;
+        }
+
+        .btn-example:hover {
+            background: rgba(79, 209, 197, 0.2);
+            border-color: #4fd1c5;
+            transform: translateY(-2px);
+        }
+
+        /* Final CTA Section */
+        .final-cta {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .final-cta h2 {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+
+        .final-cta p {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .value-title {
+                font-size: 32px;
+            }
+
+            .value-description {
+                font-size: 16px;
+            }
+
+            .sticky-cta {
+                position: static;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .value-section {
+                padding: 60px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky CTA -->
+    <div class="sticky-cta">
+        <button class="btn btn-secondary" onclick="openDashboardModal()" style="margin-right: 8px;">📊 Example Dashboard</button>
+        <a href="liquid-launch-signup.html" class="btn btn-primary">Start Enrollment →</a>
+    </div>
+
+    <!-- Value Prop 1: Conversion Tracking -->
+    <section class="value-section" id="prop-1">
+        <div class="value-badge">Value #1</div>
+        <div class="value-icon">📊</div>
+        <h1 class="value-title">Track Every Conversion, Prove Your ROI</h1>
+        <p class="value-description">Unlike Twitch Bounty Board's limited tracking, we give you complete visibility into every wishlist, pledge, and signup driven by your campaign.</p>
+
+        <div class="value-content">
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">2,847</div>
+                    <div class="metric-label">Steam Wishlists</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">$14.2K</div>
+                    <div class="metric-label">Kickstarter Pledges</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">1,423</div>
+                    <div class="metric-label">Email Signups</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">15.03%</div>
+                    <div class="metric-label">Conversion Rate</div>
+                </div>
+            </div>
+
+            <div class="dashboard-preview">
+                <div class="dashboard-header">
+                    <div class="dashboard-title">📊 Live Campaign Dashboard</div>
+                    <a href="liquid-launch-dashboard.html" class="dashboard-link">View Full Dashboard →</a>
+                </div>
+
+                <div class="mini-metrics-grid">
+                    <div class="mini-metric-box">
+                        <div class="mini-metric-value">8</div>
+                        <div class="mini-metric-label">Streams</div>
+                    </div>
+                    <div class="mini-metric-box">
+                        <div class="mini-metric-value">3.2K</div>
+                        <div class="mini-metric-label">Viewers</div>
+                    </div>
+                    <div class="mini-metric-box">
+                        <div class="mini-metric-value">721K</div>
+                        <div class="mini-metric-label">Total Views</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-conversions">
+                    <div class="mini-conversion-box">
+                        <div class="mini-conversion-label">Wishlists</div>
+                        <div class="mini-conversion-value">+717%</div>
+                    </div>
+                    <div class="mini-conversion-box">
+                        <div class="mini-conversion-label">Kickstarter</div>
+                        <div class="mini-conversion-value">$12.4K</div>
+                    </div>
+                    <div class="mini-conversion-box">
+                        <div class="mini-conversion-label">Demo Downloads</div>
+                        <div class="mini-conversion-value">1,247</div>
+                    </div>
+                    <div class="mini-conversion-box">
+                        <div class="mini-conversion-label">Purchases</div>
+                        <div class="mini-conversion-value">189</div>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="benefit-list">
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Per-influencer attribution:</strong> See exactly which streamers drive the most wishlists and conversions</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Real-time dashboard:</strong> Watch conversions happen live during streams</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Multiple conversion types:</strong> Steam wishlists, Kickstarter pledges, email list building (Silver+)</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Export reports:</strong> Share results with investors, publishers, or your team</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <div class="example-title">Real Example</div>
+            <div class="example-text">"Shadow's Requiem" (Bronze package) generated 2,847 Steam wishlists across 5 hours of streaming. That's $1.75 per wishlist - far better than paid ads."</div>
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="btn btn-primary btn-large" onclick="nextProp()">Continue →</button>
+        </div>
+        <button class="btn-example" onclick="openDashboardModal()">📊 See Example Dashboard</button>
+        <div class="progress-indicator">1 of 4</div>
+    </section>
+
+    <!-- Value Prop 2: Dual Rating System -->
+    <section class="value-section hidden" id="prop-2">
+        <div class="value-badge">Value #2</div>
+        <div class="value-icon">⭐</div>
+        <h1 class="value-title">Get Rated by Experts & Players</h1>
+        <p class="value-description">The only platform that gives you two powerful ratings: professional Team Liquid score + community player rating. Use them everywhere.</p>
+
+        <div class="value-content">
+            <div class="badge-showcase">
+                <!-- Fire Tier Badge (95 rating) -->
+                <div class="split-badge-bordered split-badge-fire">
+                    <div class="split-left-fire">
+                        <div class="fire-particles">
+                            <div class="fire-particle"></div>
+                            <div class="fire-particle"></div>
+                            <div class="fire-particle"></div>
+                        </div>
+                        <div class="split-logo-container">
+                            <img src="https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg"
+                                 alt="Team Liquid" class="split-logo logo-fire-effect">
+                        </div>
+                    </div>
+                    <div class="split-right">
+                        <div class="brand-text-integrated">TEAM LIQUID</div>
+                        <div class="split-score score-fire">95</div>
+                        <div class="split-tier-label tier-label-fire">FIRE</div>
+                    </div>
+                </div>
+
+                <!-- Community Rating Badge (85 rating) -->
+                <div class="split-badge-bordered split-badge-good">
+                    <div class="split-left-good">
+                        <div class="split-logo-container">
+                            <img src="https://cdn.prod.website-files.com/64bf6e8cda9043babe7ca006/65f44cd149e66e386d8d3da7_Crest-on-light.svg"
+                                 alt="Community" class="split-logo">
+                        </div>
+                    </div>
+                    <div class="split-right">
+                        <div class="brand-text-integrated">COMMUNITY</div>
+                        <div class="split-score score-good">85</div>
+                        <div class="split-tier-label tier-label-good">GOOD</div>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="benefit-list">
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Team Liquid Rating:</strong> Professional score from experienced Team Liquid streamers (like Rotten Tomatoes for games)</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Community Rating:</strong> Aggregate score from viewers who watched the streams</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Marketing credibility:</strong> Display ratings on your Steam page, website, and pitches</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Publisher appeal:</strong> Use ratings to secure publishing deals and funding</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <div class="example-title">Why This Matters</div>
+            <div class="example-text">Dark Moon Studios used their Team Liquid 8.5 rating in their publisher pitch. It helped them close a $500K publishing deal because it showed third-party validation from a trusted esports brand.</div>
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="btn btn-secondary btn-large" onclick="prevProp()">← Back</button>
+            <button class="btn btn-primary btn-large" onclick="nextProp()">Continue →</button>
+        </div>
+        <button class="btn-example" onclick="openDashboardModal()">📊 See Example Dashboard</button>
+        <div class="progress-indicator">2 of 4</div>
+    </section>
+
+    <!-- Value Prop 3: Vetted Influencers + Content -->
+    <section class="value-section hidden" id="prop-3">
+        <div class="value-badge">Value #3</div>
+        <div class="value-icon">🎮</div>
+        <h1 class="value-title">Curated Influencers + Content You Own Forever</h1>
+        <p class="value-description">We match you with Team Liquid streamers who love your genre. Plus you get full VODs and clips to reuse in your marketing - forever.</p>
+
+        <div class="value-content">
+            <ul class="benefit-list">
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Genre matching:</strong> We assign streamers who specialize in your game type (roguelikes, strategy, RPG, etc.)</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Team Liquid brand:</strong> Your game is promoted by one of esports' most respected organizations</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Full VOD access:</strong> Download complete stream recordings</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Edited clips:</strong> We create highlight reels and 30-90 second clips</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Professional editing:</strong> Gold+ packages include pro video editing</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Unlimited reuse:</strong> Use content on Steam, YouTube, social media, ads - anywhere</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <div class="example-title">What You Get</div>
+            <div class="example-text">After your campaign, you'll receive: Full VODs (5-100+ hours depending on package), 10-50 edited clips (30-90 seconds each), highlight reels (3-5 minutes), and raw footage. Use it to build trailers, social posts, Steam assets, or paid ads.</div>
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="btn btn-secondary btn-large" onclick="prevProp()">← Back</button>
+            <button class="btn btn-primary btn-large" onclick="nextProp()">Continue →</button>
+        </div>
+        <button class="btn-example" onclick="openDashboardModal()">📊 See Example Dashboard</button>
+        <div class="progress-indicator">3 of 4</div>
+    </section>
+
+    <!-- Value Prop 4: Detailed Feedback -->
+    <section class="value-section hidden" id="prop-4">
+        <div class="value-badge">Value #4</div>
+        <div class="value-icon">💬</div>
+        <h1 class="value-title">Get Actionable Feedback to Improve</h1>
+        <p class="value-description">Influencers and their communities fill out detailed feedback forms. Learn what works, what doesn't, and what to fix before your full launch.</p>
+
+        <div class="value-content">
+            <ul class="benefit-list">
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Influencer feedback forms:</strong> Structured questionnaires covering gameplay, design, feel, and marketability</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Community surveys:</strong> Viewers tell you what they'd pay for and what needs fixing</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Feature requests:</strong> Ranked list of most-requested features from real players</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Pain points identified:</strong> Know exactly what's frustrating players</span>
+                </li>
+                <li class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span><strong>Strengths highlighted:</strong> Learn what players love so you can lean into it</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <div class="example-title">Sample Feedback</div>
+            <div class="example-text">
+                <strong>From TL_RogueKing:</strong> "Core combat feels incredible, but the tutorial is 20 minutes too long. Players want action faster. The boss fights are outstanding - promote those heavily."<br><br>
+                <strong>Community Top Request:</strong> "Add controller support" - Requested by 147/312 viewers (47%)
+            </div>
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="btn btn-secondary btn-large" onclick="prevProp()">← Back</button>
+            <button class="btn btn-primary btn-large" onclick="showFinal()">See Enrollment Options →</button>
+        </div>
+        <button class="btn-example" onclick="openDashboardModal()">📊 See Example Dashboard</button>
+        <div class="progress-indicator">4 of 4</div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="value-section hidden final-cta" id="final-cta">
+        <h2>Ready to Launch with Team Liquid?</h2>
+        <p>Choose your package and start your campaign</p>
+
+        <div class="navigation-buttons">
+            <a href="liquid-launch-signup.html" class="btn btn-primary btn-large">Start Enrollment</a>
+            <a href="liquid-launch-packages-main.html" class="btn btn-secondary btn-large">← Back to Packages</a>
+        </div>
+    </section>
+
+    <!-- Dashboard Modal -->
+    <div class="dashboard-modal" id="dashboardModal">
+        <div class="dashboard-modal-content">
+            <div class="dashboard-modal-header">
+                <h2 class="dashboard-modal-title">Sample Dashboard</h2>
+                <button class="dashboard-modal-close" onclick="closeDashboardModal()">Close ✕</button>
+            </div>
+            <div class="dashboard-screenshots">
+                <img src="file:///C:/Users/aring/Downloads/Screenshot 2025-10-15 214425.png" alt="Dashboard Overview" class="dashboard-screenshot">
+                <img src="file:///C:/Users/aring/Downloads/Screenshot 2025-10-15 214515.png" alt="Dashboard Details" class="dashboard-screenshot">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProp = 1;
+        const totalProps = 4;
+
+        function showProp(num) {
+            // Hide all
+            for (let i = 1; i <= totalProps; i++) {
+                document.getElementById(`prop-${i}`).classList.add('hidden');
+            }
+            document.getElementById('final-cta').classList.add('hidden');
+
+            // Show target
+            if (num === 'final') {
+                document.getElementById('final-cta').classList.remove('hidden');
+            } else {
+                document.getElementById(`prop-${num}`).classList.remove('hidden');
+                currentProp = num;
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextProp() {
+            if (currentProp < totalProps) {
+                showProp(currentProp + 1);
+            }
+        }
+
+        function prevProp() {
+            if (currentProp > 1) {
+                showProp(currentProp - 1);
+            }
+        }
+
+        function showFinal() {
+            showProp('final');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextProp();
+            if (e.key === 'ArrowLeft') prevProp();
+            if (e.key === 'Escape') closeDashboardModal();
+        });
+
+        // Dashboard Modal Functions
+        function openDashboardModal() {
+            document.getElementById('dashboardModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDashboardModal() {
+            document.getElementById('dashboardModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside content
+        document.getElementById('dashboardModal').addEventListener('click', (e) => {
+            if (e.target.id === 'dashboardModal') {
+                closeDashboardModal();
+            }
+        });
+    </script>
+</body>
+</html>
